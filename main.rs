@@ -1,21 +1,16 @@
-use std::io::{self, BufRead};
-
-fn parse_two(a: &str, b: &str) -> Result<i32, std::num::ParseIntError> {
-    // TODO: parse BOTH `a` and `b` as i32 and return Ok of their sum.
-    // Use `?` on each parse so a bad input returns its Err to main
-    // instead of panicking.
-    let x = a.parse::<i32>()?;
-    let y = b.parse::<i32>()?;
-    Ok(x + y)
-}
+use std::cell::RefCell;
+use std::rc::Rc;
 
 fn main() {
-    let stdin = io::stdin();
-    let mut lines = stdin.lock().lines();
-    let a = lines.next().unwrap().unwrap();
-    let b = lines.next().unwrap().unwrap();
-    match parse_two(&a, &b) {
-        Ok(n) => println!("sum: {}", n),
-        Err(_) => println!("error: invalid input"),
-    }
+    let counter = Rc::new(RefCell::new(0));
+    let a = Rc::clone(&counter);
+    let b = Rc::clone(&counter);
+
+    // TODO: add 1 to the shared value through `a`, then again through `b`.
+    // borrow_mut() hands you a guard, not the i32 - you have to write
+    // THROUGH the guard for the change to land in the RefCell.
+    *a.borrow_mut() += 1;
+    *b.borrow_mut() += 1;
+
+    println!("{}", counter.borrow());
 }
