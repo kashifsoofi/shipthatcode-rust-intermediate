@@ -1,36 +1,22 @@
 use std::io::{self, BufRead};
-
-trait Shape {
-    fn area(&self) -> f64;
-}
-struct Circle {
-    radius: f64,
-}
-struct Square {
-    side: f64,
-}
-
-impl Shape for Circle {
-    fn area(&self) -> f64 {
-        3.14 * self.radius * self.radius
-    }
-}
-
-impl Shape for Square {
-    fn area(&self) -> f64 {
-        self.side * self.side
-    }
-}
-
 fn main() {
     let stdin = io::stdin();
-    let mut lines = stdin.lock().lines();
-    let kind = lines.next().unwrap().unwrap();
-    let dim: f64 = lines.next().unwrap().unwrap().parse().unwrap();
-    let s: Box<dyn Shape> = if kind == "circle" {
-        Box::new(Circle { radius: dim })
-    } else {
-        Box::new(Square { side: dim })
-    };
-    println!("{:.2}", s.area());
+    let mut line = String::new();
+    stdin.lock().read_line(&mut line).unwrap();
+
+    // TODO: replace the 0 below with ONE iterator chain over
+    //   line.split_whitespace()  ->  parse each token as i32
+    //                            ->  keep only the even values
+    //                            ->  square them
+    //                            ->  add them up
+    // The `: i32` on `total` is what tells the final step which
+    // integer type to produce - keep it.
+    let total: i32 = line
+        .split_whitespace()
+        .filter_map(|x| x.parse::<i32>().ok())
+        .filter(|&x| x % 2 == 0)
+        .map(|x| x * x)
+        .sum();
+
+    println!("{}", total);
 }
